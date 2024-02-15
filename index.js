@@ -9,7 +9,7 @@ const CONNECTION_STR = process.env.CONNECTION_STRING;
 
 // PostgreSQL client setup
 const client = new Client({
-    connectionString: CONNECTION_STR,
+    connectionString: "postgres://default:MmYf5zUr8DBe@ep-wispy-poetry-a4u6reca.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require",
     ssl: {
         rejectUnauthorized: false,
     },

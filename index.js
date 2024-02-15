@@ -47,7 +47,7 @@ app.get('/posts', async (req, res) => {
         const query = 'SELECT * FROM posts';
 
         // Execute the query
-        const result = await pool.query(query);
+        const result = await client.query(query);
 
         // Send the posts as a JSON response
         res.status(200).json(result.rows);

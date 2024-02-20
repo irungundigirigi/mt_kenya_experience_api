@@ -1,7 +1,11 @@
 const express = require('express');
+import {v2 as cloudinary} from 'cloudinary';
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Client } = require('pg');
+const multer = require('multer');
+
+const upload = multer({ dest: '/tmp/uploads' })
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,6 +19,12 @@ const client = new Client({
     },
 });
 
+cloudinary.config({
+  cloud_name: 'dqio2e4gu',
+  api_key: '449669313786964',
+  api_secret: 'RcLMVMRxreXhEuCJCySe4g2xXoU'
+});
+
 client.connect()
     .then(() => console.log('Connected to PostgreSQL database'))
     .catch(err => console.error('Error connecting to PostgreSQL database', err));
@@ -26,12 +36,13 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// POST route to add data to the database
-app.post('/share', async (req, res) => {
+app.post('/share', upload.single('image'), async (req, res) => {
     const { email, author, title, body } = req.body;
+    const image_file = req.file;
 
     try {
-        const query = 'INSERT INTO posts (email, author, title, body) VALUES ($1, $2, $3, $4) RETURNING *';
+        const cloudinaryResponse = await cloudinary.uploader.upload(imageFile.path);
+        const query = 'INSERT INTO posts (email, author, title, body, image_url) VALUES ($1, $2, $3, $4) RETURNING *';
         const values = [email,author, title, body];
         const result = await client.query(query, values);
 

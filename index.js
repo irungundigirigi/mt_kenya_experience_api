@@ -38,12 +38,20 @@ app.use(cors(corsOptions));
 
 app.post('/share', upload.single('image'), async (req, res) => {
     const { email, author, title, body } = req.body;
+    console.log(req.body);
+    console.log(req.file);
     const image_file = req.file;
+
+       // Check if req.file is defined
+       if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
 
     try {
         const cloudinaryResponse = await cloudinary.uploader.upload(image_file.path);
-        const query = 'INSERT INTO posts (email, author, title, body, image_url) VALUES ($1, $2, $3, $4) RETURNING *';
-        const values = [email,author, title, body];
+        console.log(cloudinaryResponse)
+        const query = 'INSERT INTO posts (email, author, title, body, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+        const values = [email,author, title, body, cloudinaryResponse.secure_url];
         const result = await client.query(query, values);
 
         res.status(201).json(result.rows[0]);

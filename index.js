@@ -50,6 +50,7 @@ app.post('/share', upload.single('image'), async (req, res) => {
     try {
         const cloudinaryResponse = await cloudinary.uploader.upload(image_file.path);
         console.log(cloudinaryResponse)
+
         const query = 'INSERT INTO posts (email, author, title, body, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *';
         const values = [email,author, title, body, cloudinaryResponse.secure_url];
         const result = await client.query(query, values);

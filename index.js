@@ -1,5 +1,5 @@
 const express = require('express');
-import {v2 as cloudinary} from 'cloudinary';
+const cloudinary = require('cloudinary').v2;
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Client } = require('pg');
